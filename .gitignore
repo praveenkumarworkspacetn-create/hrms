@@ -1,0 +1,29 @@
+# Node.js
+**/node_modules/
+**/.env
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Production / Build
+**/dist/
+**/build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Flutter
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/generated/
+**/windows/flutter/ephemeral/
+**/ios/Flutter/Ephemeral/
+
+# Logs
+logs
+*.log
