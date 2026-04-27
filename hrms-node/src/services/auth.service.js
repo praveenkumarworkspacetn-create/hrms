@@ -1,20 +1,22 @@
 const bcrypt = require('bcrypt');
 const { generateToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt.util');
-const { findUserByEmail, findUserById } = require('../repositories/auth.repository');
+const { findUserByIdentifier, findUserById } = require('../repositories/auth.repository');
 
 /**
- * Authenticate a user with email and password.
+ * Authenticate a user with email/employeeID and password.
  * Returns signed tokens and user info.
  */
-const login = async (email, password) => {
-  const user = await findUserByEmail(email);
-  if (!user) {
-    throw { status: 401, message: 'Invalid email or password.' };
+const login = async (identifier, password) => {
+  const userInstance = await findUserByIdentifier(identifier);
+  if (!userInstance) {
+    throw { status: 401, message: 'Invalid credentials.' };
   }
+
+  const user = userInstance.get({ plain: true });
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw { status: 401, message: 'Invalid email or password.' };
+    throw { status: 401, message: 'Invalid credentials.' };
   }
 
   const payload = {

@@ -5,14 +5,15 @@ const authService = require('../services/auth.service');
  * Body: { email, password }
  */
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, email, password } = req.body;
+  const loginValue = identifier || email; // Support both for now
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+  if (!loginValue || !password) {
+    return res.status(400).json({ message: 'Email/EmployeeID and password are required.' });
   }
 
   try {
-    const result = await authService.login(email, password);
+    const result = await authService.login(loginValue, password);
     return res.status(200).json({
       message: 'Login successful.',
       accessToken: result.accessToken,

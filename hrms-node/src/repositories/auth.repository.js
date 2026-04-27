@@ -1,19 +1,21 @@
-const pool = require('../config/db');
+const User = require('../models/user.model');
+const { Op } = require('sequelize');
 
 /**
- * Find a user by their email address.
- * @param {string} email
+ * Find a user by their email or employee ID.
+ * @param {string} identifier
  * @returns {Promise<object|null>}
  */
-const findUserByEmail = async (email) => {
-  const [rows] = await pool.execute(
-    `SELECT id, employee_id, name, email, password, role, company_id, department_id, is_active
-     FROM users
-     WHERE email = ? AND is_active = 1
-     LIMIT 1`,
-    [email]
-  );
-  return rows[0] || null;
+const findUserByIdentifier = async (identifier) => {
+  return await User.findOne({
+    where: {
+      [Op.or]: [
+        { email: identifier },
+        { employee_id: identifier }
+      ],
+      is_active: true
+    }
+  });
 };
 
 /**
@@ -22,14 +24,9 @@ const findUserByEmail = async (email) => {
  * @returns {Promise<object|null>}
  */
 const findUserById = async (id) => {
-  const [rows] = await pool.execute(
-    `SELECT id, employee_id, name, email, role, company_id, department_id, is_active
-     FROM users
-     WHERE id = ? AND is_active = 1
-     LIMIT 1`,
-    [id]
-  );
-  return rows[0] || null;
+  return await User.findByPk(id, {
+    attributes: { exclude: ['password'] } // Security: don't return password
+  });
 };
 
-module.exports = { findUserByEmail, findUserById };
+module.exports = { findUserByIdentifier, findUserById };
