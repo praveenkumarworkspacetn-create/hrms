@@ -1,7 +1,31 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../config/db.js';
 
-const User = sequelize.define('User', {
+class User extends Model {
+  declare id: number;
+  declare employee_id: string | null;
+  declare name: string;
+  declare email: string;
+  declare phone: string | null;
+  declare date_of_birth: Date | null;
+  declare joining_date: Date | null;
+  declare reporting_manager_id: number | null;
+  declare gender: 'male' | 'female' | 'other' | null;
+  declare address: string | null;
+  declare profile_image: string | null;
+  declare password: string;
+  declare role: 'admin' | 'manager' | 'employee';
+  declare company_id: number;
+  declare department_id: number | null;
+  declare project_id: number | null;
+  declare is_active: boolean;
+  declare created_by: number | null;
+  declare updated_by: number | null;
+  declare readonly created_at: Date;
+  declare readonly updated_at: Date;
+}
+
+User.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -85,10 +109,11 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
 }, {
+  sequelize,
   tableName: 'users',
   timestamps: true,
-  createdAt: 'created_at', // Map Sequelize timestamps to your SQL column names
+  createdAt: 'created_at',
   updatedAt: 'updated_at',
 });
 
-module.exports = User;
+export default User;

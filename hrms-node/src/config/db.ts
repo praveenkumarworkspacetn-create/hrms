@@ -1,11 +1,11 @@
-const { Sequelize } = require('sequelize');
+import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  process.env.DB_NAME!,
+  process.env.DB_USER!,
+  process.env.DB_PASSWORD!,
   {
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST || 'localhost',
     dialect: 'mysql',
     logging: false, // Set to console.log to see raw SQL queries
     define: {
@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
   }
 );
 
-const connectDB = async () => {
+const connectDB = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
     console.log('✅ Sequelize connected to MySQL successfully.');
@@ -25,4 +25,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = { sequelize, connectDB };
+export { sequelize, connectDB };

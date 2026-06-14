@@ -1,25 +1,27 @@
-const bcrypt = require('bcrypt');
-const { generateToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt.util');
-const { findUserByIdentifier, findUserById } = require('../repositories/auth.repository');
+import bcrypt from 'bcrypt';
+import { generateToken, generateRefreshToken, verifyRefreshToken,} from '../utils/jwt.util.js';
+import { findUserByIdentifier, findUserById } from '../repositories/auth.repository.js';
+import type { JwtPayload, RefreshPayload } from '../types/jwt.types.js';
+import type { LoginResult, RefreshResult, UserDTO } from '../types/auth.types.js';
 
 /**
  * Authenticate a user with email/employeeID and password.
  * Returns signed tokens and user info.
  */
-const login = async (identifier, password) => {
+const login = async (identifier: string, password: string): Promise<LoginResult> => {
   const userInstance = await findUserByIdentifier(identifier);
   if (!userInstance) {
     throw { status: 401, message: 'Invalid credentials.' };
   }
 
-  const user = userInstance.get({ plain: true });
+  const user = userInstance.get({ plain: true }) as UserDTO;
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw { status: 401, message: 'Invalid credentials.' };
   }
 
-  const payload = {
+  const payload: JwtPayload = {
     id: user.id,
     email: user.email,
     role: user.role,
@@ -37,7 +39,7 @@ const login = async (identifier, password) => {
 /**
  * Refresh an Access Token using a Refresh Token.
  */
-const refresh = async (token) => {
+const refresh = async (token: string): Promise<RefreshResult> => {
   try {
     const decoded = verifyRefreshToken(token);
     const user = await findUserById(decoded.id);
@@ -46,7 +48,7 @@ const refresh = async (token) => {
       throw { status: 401, message: 'Invalid refresh token.' };
     }
 
-    const payload = {
+    const payload: JwtPayload = {
       id: user.id,
       email: user.email,
       role: user.role,
@@ -62,10 +64,10 @@ const refresh = async (token) => {
 
 /**
  * Get the authenticated user's profile by ID.
- * @param {number} userId
- * @returns {Promise<object>}
+ * @param userId - The user ID
+ * @returns The user profile
  */
-const getProfile = async (userId) => {
+const getProfile = async (userId: number): Promise<any> => {
   const user = await findUserById(userId);
   if (!user) {
     throw { status: 404, message: 'User not found.' };
@@ -73,4 +75,4 @@ const getProfile = async (userId) => {
   return user;
 };
 
-module.exports = { login, getProfile, refresh };
+export { login, getProfile, refresh };
