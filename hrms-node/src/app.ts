@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import authRoutes from './routes/auth.routes.js';
 
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: false });
 
 app.register(cors);
 app.register(authRoutes, { prefix: '/api/hrms/auth' });
