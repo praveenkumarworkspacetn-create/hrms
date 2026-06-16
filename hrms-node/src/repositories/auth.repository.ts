@@ -8,13 +8,17 @@ const findUserByIdentifier = async (identifier: string) => {
         { email: identifier },
         { employee_id: identifier }
       ],
-      is_active: true
+      is_active: 1
     }
   });
 };
 
 const findUserById = async (id: number) => {
-  return await User.findByPk(id, {
+  return await User.findOne({
+    where: {
+      id,
+      is_active: true
+    },
     attributes: {
       exclude: ['password']
     }
