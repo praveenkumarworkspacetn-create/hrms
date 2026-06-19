@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 import Company from "../models/company.model.js";
 import Department from "../models/department.model.js";
 import Project from "../models/project.model.js";
-import { fn, col, Op } from 'sequelize';
+import { fn, col, Op, where } from 'sequelize';
 
 export const getEmpTotLeaves = async (
     userId: number,
@@ -33,6 +33,12 @@ export const getUpcomingHolidays = async (
     today: Date
 ) => {
     const result = await HolidayCalendar.findAll({
+        attributes: [
+            'id',
+            'year',
+            'holiday_date',
+            'holiday_name',
+        ],
         where: {
             holiday_date: {
                 [Op.gte]: today
@@ -116,4 +122,35 @@ export const projectList = async (
     });
 
     return projects;
+};
+
+export const getUpcomingBirthdays = async () => {
+    const today = new Date();
+    const currentMonthDay = today.toISOString().slice(5, 10); // MM-DD
+
+    const result = await User.findAll({
+        attributes: [
+            'id',
+            'name',
+            'date_of_birth'
+        ],
+        where: {
+            is_active: true,
+            [Op.and]: [
+                where(
+                    fn('DATE_FORMAT', col('date_of_birth'), '%m-%d'),
+                    {
+                        [Op.gte]: currentMonthDay
+                    }
+                )
+            ]
+        },
+        order: [
+            [fn('DATE_FORMAT', col('date_of_birth'), '%m-%d'), 'ASC']
+        ],
+        limit: 5,
+        raw: true
+    });
+
+    return result;
 };

@@ -26,6 +26,3 @@ const connectDB = async (): Promise<void> => {
 };
 
 export { sequelize, connectDB };
-
-// Import models to register associations
-import '../models/index.js';
