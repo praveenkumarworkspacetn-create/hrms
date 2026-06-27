@@ -6,28 +6,8 @@ export const API_ENDPOINTS = {
     REFRESH: '/auth/refresh',
     ME: '/auth/me',
   },
-  EMPLOYEES: {
-    LIST: '/employees',
-    CREATE: '/employees',
-    UPDATE: '/employees/:id',
-    DELETE: '/employees/:id',
-    DETAIL: '/employees/:id',
-  },
-  ATTENDANCE: {
-    LIST: '/attendance',
-    CREATE: '/attendance',
-    UPDATE: '/attendance/:id',
-  },
-  PAYROLL: {
-    LIST: '/payroll',
-    CREATE: '/payroll',
-    UPDATE: '/payroll/:id',
-  },
-  LEAVE: {
-    LIST: '/leave',
-    CREATE: '/leave',
-    APPROVE: '/leave/:id/approve',
-    REJECT: '/leave/:id/reject',
+  DASHBOARD: {
+    DASHBOARD: '/dashboard',
   },
 } as const;
 
